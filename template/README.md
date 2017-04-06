@@ -33,25 +33,28 @@ Congratulations, you have a working C project!
 
 Here is a brief description of how the template works:
 
-* **`build`:** an empty directory. This is where you will compile your project.
-* **`CMakeModules`:** when using external libraries that CMake (see below)
-  does not know, you must give it custom modules that you usually find on
-  the internet. This directory is where you put them.
-* **`include`:** put all your header files in this directory. They will be found
-  under the normal name. For instance, to include `include/foo/bar.h`, you
-  will simply `#include "foo/bar.h"`.
-* **`include/config.h.in`:** this special header allows CMake (see below) to
-  pass the result of its system configuration to your C code. This can be
-  useful, for instance, if you want to enable or disable some functions
-  depending on whether a special library is installed on the system.
-* **`src`:** put all your source files in this directory.
-* **`CMakeLists.txt`:** The template uses [CMake](https://cmake.org/) to
-  control the build process. This file controls CMake itself. More on CMake
-  below.
-* **`.doxygen`:** This file controls doxygen settings. You don't have to
-  change it, CMake will fill appropriate values depending on what you have
-  in your `CMakeLists.txt`.
-* **`LICENSE`:** Your code's license.
+* **[`build`](build):** an empty directory. This is where you will compile
+  your project.
+* **[`CMakeModules`](CMakeModules):** when using external libraries that
+  CMake (see below) does not know, you must give it custom modules that you
+  usually find on the internet. This directory is where you put them.
+* **[`include`](include):** put all your header files in this directory.
+  They will be found under the normal name. For instance, to include
+  `include/foo/bar.h`, you will simply `#include "foo/bar.h"`.
+* **[`include/config.h.in`](include/config.h.in):** this special header
+  allows CMake (see below) to pass the result of its system configuration
+  to your C code. This can be useful, for instance, if you want to enable
+  or disable some functions depending on whether a special library is
+  installed on the system.
+* **[`src`](src):** put all your source files in this directory.
+* **[`tests`](tests):** put all your unit tests in this directory.
+* **[`CMakeLists.txt`](CMakeLists.txt):** The template uses
+  [CMake](https://cmake.org/) to control the build process. This file controls
+  CMake itself. More on CMake below.
+* **[`.doxygen`](.doxygen):** This file controls doxygen settings. You don't
+  have to change it, CMake will fill appropriate values depending on what you
+  have in your `CMakeLists.txt`.
+* **[`LICENSE`](LICENSE):** Your code's license.
 * **`README.md`:** This file! Once you have read all this, replace it with the
   README for your project. You can use
   [Markdown](https://guides.github.com/features/mastering-markdown/) in it.
@@ -88,7 +91,7 @@ Customizing your project
 
 To fully transform the template into your own project, follow those simple steps:
 
-* Remove example files: `include/example.h`, `src/example.c` and `test/example.c`.
+* Remove example files: `include/example.h`, `src/example.c` and `tests/example.c`.
 * Update `CMakeLists.txt`. At the very least:
     - Change the project name and description at the top of the file.
     - Rename all variables that start with `example_*` so they start
@@ -116,7 +119,7 @@ advantages:
   platform: Makefile, MSVS project, …
 * Customizable builds: cmake can detect the presence and the appropriate
   options to compile and link against libraries on a wide range of systems.
-  It is even possible to change the build process depending on availalbe
+  It is even possible to change the build process depending on availabe
   libraries. For instance, make your project read PNG images when libpng
   is detected, and stick to bmp otherwise.
 * Automatic dependencies. CMake reads source files, calculates dependencies
@@ -131,13 +134,15 @@ the most common commands and variables.
 
 The basic idea is CMake is controlled through:
 
-* **commands**, that tell cmake to find things or explains how to build some
+* [**commands**](https://cmake.org/cmake/help/v3.0/manual/cmake-commands.7.html),
+  that tell cmake to find things or explains how to build some
   pieces of the project. For instance, `find_package(SDL2)`
 * **targets**, that tell cmake what the final results should be. They are created
   with special commands `add_executable`, `add_library` and `add_custom_target`.
-* **variables**, that modify the behavior of cmake. They are modified with
-  the command `set`. For instance: `set(PROJECT_NAME "example")`. Many special
-  variables are recognized by cmake.
+* [**variables**](https://cmake.org/cmake/help/v3.0/manual/cmake-variables.7.html),
+  that modify the behavior of cmake. They are modified with the command `set`.
+  For instance: `set(CMAKE_PROJECT_NAME "example")`. Many special variables are
+  recognized by cmake.
 
 In this template, the provided `CMakeLists.txt` builds the project in three parts:
 
@@ -191,6 +196,3 @@ This template project has a double licensing:
 * Once you have customized your project as described in this README.md, you
   are free to use the resulting project in any way you want. Keeping copyright
   or mentionning the template's author is appreciated, but not required.
-
-
-[CMake commands](https://cmake.org/cmake/help/v3.0/manual/cmake-commands.7.html).
