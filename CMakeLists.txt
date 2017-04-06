@@ -15,8 +15,6 @@ project (colouring C)
 ##############################################################################
 # Settings
 
-option(BUILD_DOCUMENTATION "Build documentation with Doxygen." ON)
-
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMakeModules)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall -Wextra -pedantic -Werror -D_POSIX_C_SOURCE=200112L")
 set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -s")
@@ -92,22 +90,16 @@ install(TARGETS colouring DESTINATION bin)
 ##############################################################################
 # Documentation
 
-IF(BUILD_DOCUMENTATION)
-    find_package(Doxygen)
-    IF(NOT DOXYGEN_FOUND)
-        MESSAGE(SEND_ERROR
-            "Doxygen could not be found. Insall it or set BUILD_DOCUMENTATION=off"
-        )
-    ENDIF(NOT DOXYGEN_FOUND)
-
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/.doxygen"
-                   "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")
-    add_custom_target(doc
-        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMENT "Generating documentation"
-    )
-ENDIF(BUILD_DOCUMENTATION)
+find_package(Doxygen)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/.doxygen"
+                "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")
+add_custom_target(doc
+    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND ${CMAKE_COMMAND} -E tar "czf" "docs.tgz" docs
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Generating documentation"
+)
 
 ##############################################################################
 # Testing

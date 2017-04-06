@@ -19,8 +19,8 @@ BRIEF_MEMBER_DESC      = YES
 REPEAT_BRIEF           = YES
 
 FULL_PATH_NAMES        = YES
-STRIP_FROM_PATH        = @PROJECT_SOURCE_DIR@ \
-                         @PROJECT_BINARY_DIR@
+STRIP_FROM_PATH        = @CMAKE_CURRENT_SOURCE_DIR@ \
+                         @CMAKE_CURRENT_BINARY_DIR@
 JAVADOC_AUTOBRIEF      = YES
 AUTOLINK_SUPPORT       = YES
 MARKDOWN_SUPPORT       = YES
@@ -64,8 +64,8 @@ WARN_AS_ERROR          = NO
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
 
-INPUT                  = @PROJECT_SOURCE_DIR@/src \
-                         @PROJECT_SOURCE_DIR@/include
+INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/src \
+                         @CMAKE_CURRENT_SOURCE_DIR@/include
 INPUT_ENCODING         = UTF-8
 
 FILE_PATTERNS          = *.c *.h *.in
@@ -88,7 +88,7 @@ SOURCE_TOOLTIPS        = YES
 #---------------------------------------------------------------------------
 
 GENERATE_HTML          = YES
-HTML_OUTPUT            = @PROJECT_BINARY_DIR@/doc
+HTML_OUTPUT            = @CMAKE_CURRENT_BINARY_DIR@/docs
 HTML_FILE_EXTENSION    = .html
 
 HTML_COLORSTYLE_HUE    = 220
