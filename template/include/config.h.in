@@ -1,0 +1,18 @@
+/* This file used to pass CMake results to the code.
+ */
+#ifndef CONFIG_H
+#define CONFIG_H
+
+/* Add lines in this form: */
+#cmakedefine EXAMPLE_SETTING_FROM_CMAKE
+
+/* You can then use this in other files:
+ *
+ * #include "config.h"
+ *
+ * #ifdef EXAMPLE_SETTING_FROM_CMAKE
+ *     something_only_if_setting_is_ok();
+ * #endif
+ */
+
+#endif
