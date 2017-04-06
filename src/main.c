@@ -43,7 +43,7 @@ bool parse_options(int argc, char * argv[], struct options * opts)
     opts->nb_colors  = 6;
     clock_gettime(CLOCK_REALTIME, &now);
     opts->seed       = now.tv_sec * 1024 + now.tv_nsec/1024;
-    opts->turns      = 25;
+    opts->turns      = 0;
 
     while ((opt = getopt(argc, argv, "hn:s:t:v")) != -1) {
         switch (opt) {
@@ -85,6 +85,10 @@ bool parse_options(int argc, char * argv[], struct options * opts)
             fprintf(stderr, "Width must be between 3 and %d\n", COLOURING_MAX_HEIGHT);
             return false;
         }
+    }
+    /* If no turn count was given, make up a reasonably challenging one */
+    if (opts->turns == 0) {
+        opts->turns = opts->nb_colors * 3;
     }
 
     return true;

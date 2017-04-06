@@ -128,9 +128,9 @@ bool world_default_seeder(color_t * cells, unsigned width, unsigned height,
     for (y = 0; y < height; y += 1) {
         for (x = 0; x < width; x += 1) {
             int what = rand();
-            if (what <= 1*(RAND_MAX/4) && x > 0) {
+            if (what <= 1*(RAND_MAX/5) && x > 0) {
                 grid[y][x] = grid[y][x-1];
-            } else if (what > 1*(RAND_MAX/4) && what < 2*(RAND_MAX/4) && y > 0) {
+            } else if (what > 1*(RAND_MAX/5) && what < 2*(RAND_MAX/5) && y > 0) {
                 grid[y][x] = grid[y-1][x];
             } else {
                 grid[y][x] = rand_interval(0, nb_colors - 1);
