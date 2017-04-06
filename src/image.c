@@ -4,11 +4,13 @@
 #include <png.h>
 #include <SDL.h>
 #include <stdbool.h>
+#include "config.h"
+#include "image.h"
 
 /** Memory buffer descriptor
  *
  * Tracks current position in a memory buffer, ensuring it cannot be
- * overred.
+ * overread.
  */
 struct buffer_pointer {
     const void *    buffer;     /**< Address of memory buffer */

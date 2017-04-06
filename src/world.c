@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include "config.h"
 #include "stack.h"
 #include "utils.h"
 #define WORLD_INTERNALS

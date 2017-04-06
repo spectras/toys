@@ -2,6 +2,8 @@
  * @copydoc utils.h
  */
 #include <stdlib.h>
+#include "config.h"
+#include "utils.h"
 
 /* Function code taken from http://stackoverflow.com/a/17554531/3212865
  * Authored by [theJPster](http://stackoverflow.com/users/1336679/thejpster)

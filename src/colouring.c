@@ -3,6 +3,7 @@
  */
 #include <SDL.h>
 #include <stdlib.h>
+#include "config.h"
 #include "colouring.h"
 #include "image.h"
 #include "resources.h"

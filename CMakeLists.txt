@@ -11,6 +11,8 @@
 #
 cmake_minimum_required (VERSION 2.8)
 project (colouring C)
+set(PROJECT_VERSION_MAJOR 1)
+set(PROJECT_VERSION_MINOR 0)
 
 ##############################################################################
 # Settings

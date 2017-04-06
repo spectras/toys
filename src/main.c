@@ -4,14 +4,17 @@
  * Parses options from command line, initializes libraries and instanciates
  * game world / interface.
  */
+/** @page LICENSE
+ *  @verbinclude LICENSE
+ */
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 #include <SDL.h>
-#include "colouring.h"
 #include "config.h"
+#include "colouring.h"
 #include "world.h"
 
 /** Program options, parsed from command line */
