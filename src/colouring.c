@@ -76,7 +76,7 @@ Colouring * colouring_create(World * world, unsigned turns)
 
     app->window = SDL_CreateWindow("Colouring",
                                    SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                                   20 * app->width, 20 * app->height,
+                                   32 * app->width, 32 * app->height,
                                    SDL_WINDOW_RESIZABLE);
     if (app->window == NULL) { goto err_free_app; }
     app->renderer = SDL_CreateRenderer(app->window, -1, 0);
@@ -156,10 +156,11 @@ static void render(const Colouring * app)
     }
 
     /* Render game tiles */
+    SDL_SetRenderDrawBlendMode(app->renderer, SDL_BLENDMODE_MOD);
     for (y = 0; y < app->height; y += 1) {
         for (x = 0; x < app->width; x += 1) {
             const SDL_Color * color = &colors[world_get_cell(app->world, x, y)];
-            SDL_SetRenderDrawColor(app->renderer, color->r, color->g, color->b, 255);
+            SDL_SetRenderDrawColor(app->renderer, color->r, color->g, color->b, 203);
             SDL_RenderFillRect(app->renderer, &(SDL_Rect){
                 app->hoffset + x * app->square_size,
                 app->voffset + y * app->square_size,
@@ -215,9 +216,9 @@ static void do_play_turn(Colouring * app, color_t color)
                                     app->window);
         SDL_PushEvent(&(SDL_Event){SDL_QUIT});
     } else {
-        char title[32];
-        sprintf(title, "Colouring - turn %d",
-                world_get_played_turns(app->world) + 1);
+        char title[64];
+        sprintf(title, "Colouring - turn %u / %u",
+                world_get_played_turns(app->world) + 1, app->turns);
         SDL_SetWindowTitle(app->window, title);
     }
 }
