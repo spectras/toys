@@ -122,10 +122,11 @@ int main(int argc, char * argv[])
     srand(options.seed);
     world = world_create(options.width, options.height,
                          options.nb_colors, world_default_seeder);
-    if (world == NULL) { goto err_shutdown_sdl; }
+    if (world == NULL) { exit_code = 3; goto err_shutdown_sdl; }
 
     /* Run application */
-    if ((app = colouring_create(world, options.turns)) == NULL) { goto err_destroy_world; }
+    app = colouring_create(world, options.turns);
+    if (app == NULL) { exit_code = 4; goto err_destroy_world; }
     exit_code = colouring_exec(app);
     colouring_destroy(app);
 
