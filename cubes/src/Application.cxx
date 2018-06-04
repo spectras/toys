@@ -39,7 +39,8 @@ void std::default_delete<SDL_Window>::operator()(SDL_Window *p) const
 Application::Application(std::string name)
  : m_quit(false),
    m_window(createWindow(name)),
-   m_angle(0.0f)
+   m_angle(0.0f),
+   m_visible(false)
 {}
 
 Application::~Application()
@@ -63,11 +64,17 @@ int Application::run()
             }
         }
 
+        // Keep track of elapsed time and feed it to update()
         auto ticks = SDL_GetTicks();
         update(ticks - lastTicks);
-        render();
-        SDL_GL_SwapWindow(m_window.get());
 
+        // Render to hidden buffer, then swap buffers to show the result
+        if (m_visible) {
+            render();
+            SDL_GL_SwapWindow(m_window.get());
+        }
+
+        // Finalize pass
         processErrors("mainloop errors");
         lastTicks = ticks;
     } while(!m_quit);
@@ -82,6 +89,7 @@ void Application::init()
     auto vertexShader = gl::Shader::compile(gl::Shader::type::Vertex,
                                             shaders_vertex_glsl, shaders_vertex_glsl_len);
     if (vertexShader.hasError()) { throw std::runtime_error(vertexShader.error()); }
+
     auto fragmentShader = gl::Shader::compile(gl::Shader::type::Fragment,
                                               shaders_fragment_glsl, shaders_fragment_glsl_len);
     if (fragmentShader.hasError()) { throw std::runtime_error(fragmentShader.error()); }
@@ -116,13 +124,14 @@ void Application::update(unsigned ms)
 void Application::render()
 {
     // Reset rendering
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // clear buffers
+    glEnable(GL_CULL_FACE);     // filter out back-facing primitives
+    glEnable(GL_DEPTH_TEST);    // enable depth testing, hiding pixels behind other shapes
+    glDepthFunc(GL_LESS);       // tell OpenGL "before" means "with lower depth value"
+    m_program.enable();         // enable our shaders
 
+    // Prepare a projection matrix - converting from 3D space into 2D position
     auto projection = glm::perspective(glm::radians(45.0f), 4.0f/3.0f, 0.1f, 100.0f);
-    m_program.enable();
 
     // Draw right cube
     auto model = glm::translate(glm::mat4(1), {2.0f, 0.0f, -8.0f});
@@ -148,6 +157,7 @@ bool Application::processErrors(const char * ctx)
     GLenum err = glGetError();
     if (err == GL_NO_ERROR) { return true; }
 
+    // There may be several errors, loop until we got all of them
     std::cerr <<ctx <<": \n";
     do {
         auto error = gl::error(err);
@@ -161,11 +171,14 @@ bool Application::processErrors(const char * ctx)
 
 void Application::onKeyDown(const SDL_KeyboardEvent & evt)
 {
-    if (evt.keysym.sym == SDLK_ESCAPE) { quit(); }
+    switch (evt.keysym.sym) {
+        case SDLK_ESCAPE: quit(); break;
+    }
 }
 
 void Application::onKeyUp(const SDL_KeyboardEvent &)
 {
+    // do nothing
 }
 
 void Application::onQuitEvent()
@@ -173,8 +186,12 @@ void Application::onQuitEvent()
     quit();
 }
 
-void Application::onWindowEvent(const SDL_WindowEvent &)
+void Application::onWindowEvent(const SDL_WindowEvent & evt)
 {
+    switch (evt.event) {
+        case SDL_WINDOWEVENT_SHOWN: m_visible = true; break;
+        case SDL_WINDOWEVENT_HIDDEN: m_visible = false; break;
+    }
 }
 
 /****************************************************************************/
@@ -187,14 +204,14 @@ void Application::quit()
 std::unique_ptr<SDL_Window> Application::createWindow(const std::string & name)
 {
     SDL_GL_ResetAttributes();
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);   // we want OpenGL 3
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);   // actually, OpenGL 3.3
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);      // with hardware support
 
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);                // 8-bit red channel
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);              // 8-bit green channel
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);               // 8-bit blue channel
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);            // with double buffering
 
     auto window = std::unique_ptr<SDL_Window>(SDL_CreateWindow(
         name.c_str(),
@@ -204,7 +221,7 @@ std::unique_ptr<SDL_Window> Application::createWindow(const std::string & name)
     ));
     if (!window) { throw std::runtime_error(SDL_GetError()); }
 
-    SDL_GL_CreateContext(window.get());
+    SDL_GL_CreateContext(window.get());                     // enable OpenGL engine
     return window;
 }
 

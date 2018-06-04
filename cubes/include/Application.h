@@ -55,6 +55,7 @@ private:
     GLint                       m_mvpLocation;          ///< Location of mvp uniform variable
 
     unsigned                    m_angle;                ///< Current rotation angle for cubes
+    bool                        m_visible;              ///< Whether window is currently visible
 };
 
 /****************************************************************************/
