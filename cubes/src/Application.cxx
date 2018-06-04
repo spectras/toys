@@ -69,10 +69,8 @@ int Application::run()
         update(ticks - lastTicks);
 
         // Render to hidden buffer, then swap buffers to show the result
-        if (m_visible) {
-            render();
-            SDL_GL_SwapWindow(m_window.get());
-        }
+        if (m_visible) { render(); }
+        SDL_GL_SwapWindow(m_window.get());
 
         // Finalize pass
         processErrors("mainloop errors");
@@ -222,6 +220,7 @@ std::unique_ptr<SDL_Window> Application::createWindow(const std::string & name)
     if (!window) { throw std::runtime_error(SDL_GetError()); }
 
     SDL_GL_CreateContext(window.get());                     // enable OpenGL engine
+    SDL_GL_SetSwapInterval(1);                              // enable V-sync
     return window;
 }
 
