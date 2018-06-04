@@ -5,8 +5,7 @@
 extern "C" {
 #endif
 #define RESOURCE(name) \
-    extern const char name[]; \
-    extern const unsigned int name ## _len;
+    extern const char name[]; extern const unsigned int name ## _len;
 
 
 RESOURCE(shaders_fragment_glsl)
