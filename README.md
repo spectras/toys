@@ -8,6 +8,8 @@ purposes.
 * **cubes** is the classical rotating cube demo, using modern OpenGL (shaders&buffers).
 * **template-c-cmake** is a C project sample, showing how to structure a simple
   build environment using CMake.
+* **template-python** is a python project sample with all boilerplate: unit tests, documentation
+  generation, linter and packaging.
 
 Each directory in this repository is completely independent from the
 others. The only reason they are together is convenience.

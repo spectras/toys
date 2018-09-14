@@ -1,0 +1,14 @@
+# Python bytecode cache
+__pycache__/
+
+# Runtime
+.coverage
+.env/
+env/
+.venv/
+venv/
+.pytest_*/
+*.log
+
+# Packaging
+*.egg-info/

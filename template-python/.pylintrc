@@ -1,0 +1,152 @@
+[MASTER]
+
+ignore=.git
+limit-inference-results=100
+suggestion-mode=yes
+unsafe-load-any-extension=no
+
+
+[MESSAGES CONTROL]
+
+# Only show warnings with the listed confidence levels. Leave empty to show
+# all. Valid levels: HIGH, INFERENCE, INFERENCE_FAILURE, UNDEFINED.
+confidence=
+disable=
+
+[REPORTS]
+output-format=colorized
+
+[REFACTORING]
+max-nested-blocks=5
+
+[SIMILARITIES]
+ignore-comments=yes
+ignore-docstrings=yes
+ignore-imports=no
+min-similarity-lines=4
+
+[VARIABLES]
+allow-global-unused-variables=yes
+
+dummy-variables-rgx=_+$|(_[a-zA-Z0-9_]*[a-zA-Z0-9]+?$)|dummy|^ignored_|^unused_
+ignored-argument-names=_.*|^ignored_|^unused_
+
+init-import=no
+redefining-builtins-modules=six.moves,past.builtins,future.builtins,builtins,io
+
+
+[BASIC]
+argument-naming-style=snake_case
+attr-naming-style=snake_case
+class-attribute-naming-style=any
+class-naming-style=PascalCase
+const-naming-style=UPPER_CASE
+function-naming-style=snake_case
+inlinevar-naming-style=any
+method-naming-style=snake_case
+module-naming-style=snake_case
+variable-naming-style=snake_case
+
+docstring-min-length=3
+no-docstring-rgx=^_
+
+# Good variable names which should always be accepted, separated by a comma.
+good-names=i,
+           j,
+           k,
+           _,
+           fd
+property-classes=abc.abstractproperty
+
+[FORMAT]
+
+expected-line-ending-format=LF
+
+ignore-long-lines=^\s*(# )?<?https?://\S+>?$
+
+indent-after-paren=4
+indent-string='    '
+max-line-length=120
+max-module-lines=800
+
+no-space-check=trailing-comma,
+               dict-separator
+
+single-line-class-stmt=no
+single-line-if-stmt=no
+
+[LOGGING]
+
+# Logging modules to check that the string format arguments are in logging
+# function parameter format.
+logging-modules=logging
+
+[TYPECHECK]
+
+contextmanager-decorators=contextlib.contextmanager
+
+# Tells whether missing members accessed in mixin class should be ignored. A
+# mixin class is detected if its name ends with "mixin" (case insensitive).
+ignore-mixin-members=yes
+
+# Tells whether to warn about missing members when the owner of the attribute
+# is inferred to be None.
+ignore-none=yes
+
+# This flag controls whether pylint should warn about no-member and similar
+# checks whenever an opaque object is returned when inferring. The inference
+# can return multiple potential results while evaluating a Python object, but
+# some branches might not be evaluated, which results in partial inference. In
+# that case, it might be useful to still emit no-member and other checks for
+# the rest of the inferred objects.
+ignore-on-opaque-inference=yes
+
+ignored-classes=optparse.Values,thread._local,_thread._local
+ignored-modules=
+
+missing-member-hint=yes
+missing-member-hint-distance=1
+missing-member-max-choices=1
+
+[MISCELLANEOUS]
+
+# List of note tags to take in consideration, separated by a comma.
+notes=FIXME,
+      TODO
+
+[CLASSES]
+
+# List of method names used to declare (i.e. assign) instance attributes.
+defining-attr-methods=__init__,
+                      __new__,
+                      setUp
+
+# List of member names, which should be excluded from the protected access
+# warning.
+exclude-protected=_asdict,
+                  _fields,
+                  _replace,
+                  _source,
+                  _make
+
+valid-classmethod-first-arg=cls
+valid-metaclass-classmethod-first-arg=cls
+
+
+[IMPORTS]
+
+allow-wildcard-with-all=no
+deprecated-modules=optparse,tkinter.tix
+
+[DESIGN]
+
+max-args=5              # Maximum number of arguments for function / method.
+max-attributes=7        # Maximum number of attributes for a class (see R0902).
+max-bool-expr=5         # Maximum number of boolean expressions in an if statement.
+max-branches=12         # Maximum number of branch for function / method body.
+max-locals=15           # Maximum number of locals for function / method body.
+max-parents=7           # Maximum number of parents for a class (see R0901).
+max-public-methods=20   # Maximum number of public methods for a class (see R0904).
+max-returns=6           # Maximum number of return / yield for function / method body.
+max-statements=50       # Maximum number of statements in function / method body.
+min-public-methods=2    # Minimum number of public methods for a class (see R0903).
