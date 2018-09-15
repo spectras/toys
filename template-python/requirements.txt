@@ -1,0 +1,2 @@
+# Note - do not add requirements here, add them to setup.py
+.

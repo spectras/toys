@@ -1,15 +1,8 @@
 #!/usr/bin/env python
 ''' Package '''
 
-import os.path
 from setuptools import setup, find_packages
 import example
-
-ROOT = os.path.dirname(__file__)
-
-# Load requirements from the file, keeping them in one place
-with open(os.path.join(ROOT, 'requirements.txt')) as fd:
-    REQUIREMENTS = [line.strip() for line in fd if line]
 
 setup(
     name='example',
@@ -25,8 +18,14 @@ setup(
         'Programming Language :: Python :: 3.7',
     ],
     packages=find_packages(exclude=('tests', 'tests.*')),
-    scripts=['example.py'],                                 # program entry point, remove if none
+    entry_points={
+        'console_scripts': [
+            'example = example.run:main',                   # creates 'example' command
+        ],
+    },
     python_requires='>=3.5',
-    install_requires=REQUIREMENTS,
+    install_requires=[
+        #'somepackage>=1.0',                                # add dependencies here
+    ],
     tests_require=['pytest'],
 )
