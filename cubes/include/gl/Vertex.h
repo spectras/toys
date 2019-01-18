@@ -18,21 +18,34 @@ namespace gl {
 class VertexArray final
 {
 public:
-    typedef GLuint id_type;                     ///< Internal type of vertex array identifier
+    using id_type = GLuint;                     ///< Internal type of vertex array identifier
     static constexpr id_type invalid_id = 0;    ///< Sentinel value for invalid vertex object
-    typedef std::pair<std::size_t, std::size_t> bounds;
+    using bounds = std::pair<GLsizei, GLsizei>;
 
 public:
     VertexArray();
     VertexArray(const VertexArray &) = delete;
     VertexArray(VertexArray && other) noexcept
         : m_id(invalid_id) { std::swap(m_id, other.m_id); }
-    VertexArray & operator=(VertexArray && other);
-    ~VertexArray();
+    ~VertexArray()
+        { clear(); }
 
-    void        clear();
+    VertexArray & operator=(VertexArray && rhs)
+    {
+        clear();
+        std::swap(m_id, rhs.m_id);
+        return *this;
+    }
 
-    void        enableVertexAttrib(GLuint idx, bool val)
+    void clear()
+    {
+        if (m_id != invalid_id) {
+            glDeleteVertexArrays(1, &m_id);
+            m_id = invalid_id;
+        }
+    }
+
+    void enableVertexAttrib(GLuint idx, bool val)
     {
         assert(s_bound == m_id);
 #ifndef NDEBUG
@@ -48,7 +61,7 @@ public:
     /// Define data for a vertex attribute
     void setVertexAttrib(GLuint idx, VertexBuffer & buf,
                          unsigned n, gl::type type, bool normalize,
-                         std::size_t stride, std::size_t offset)
+                         GLsizei stride, GLsizei offset)
     {
         assert(s_bound == m_id);
 #ifndef NDEBUG
@@ -58,13 +71,13 @@ public:
         m_attribArrays[idx] = buf.id();
 #endif
         buf.bind();
-        glVertexAttribPointer(idx, n, static_cast<GLenum>(type), normalize,
+        glVertexAttribPointer(idx, GLint(n), static_cast<GLenum>(type), normalize,
                               stride, reinterpret_cast<void*>(offset));
     }
 
     /// Define data for a vertex attribute, using integers
     void setVertexAttribI(GLuint idx, VertexBuffer & buf, unsigned n, gl::type type,
-                          std::size_t stride, std::size_t offset)
+                          GLsizei stride, GLsizei offset)
     {
         assert(s_bound == m_id);
 #ifndef NDEBUG
@@ -74,13 +87,13 @@ public:
         m_attribArrays[idx] = buf.id();
 #endif
         buf.bind();
-        glVertexAttribIPointer(idx, n, static_cast<GLenum>(type),
+        glVertexAttribIPointer(idx, GLint(n), static_cast<GLenum>(type),
                                stride, reinterpret_cast<void*>(offset));
     }
 
     /// Define data for a vertex attribute, using double precision floats
     void setVertexAttribL(GLuint idx, VertexBuffer & buf, unsigned n, gl::type type,
-                          std::size_t stride, std::size_t offset)
+                          GLsizei stride, GLsizei offset)
     {
         assert(s_bound == m_id);
 #ifndef NDEBUG
@@ -90,7 +103,7 @@ public:
         m_attribArrays[idx] = buf.id();
 #endif
         buf.bind();
-        glVertexAttribLPointer(idx, n, static_cast<GLenum>(type),
+        glVertexAttribLPointer(idx, GLint(n), static_cast<GLenum>(type),
                                stride, reinterpret_cast<void*>(offset));
     }
 
@@ -128,7 +141,7 @@ public:
         assert(s_bound == m_id);
         assert(positions.size() == counts.size());
         glMultiDrawArrays(static_cast<GLenum>(prim), positions.data(), counts.data(),
-                          counts.size());
+                          GLsizei(counts.size()));
     }
 
     /// Draw multiple indexed primitives from the vertex array, using an array of index bounds
@@ -139,7 +152,7 @@ public:
         assert(s_bound == m_id);
         assert(positions.size() == counts.size());
         glMultiDrawElements(static_cast<GLenum>(prim), counts.data(), static_cast<GLenum>(type),
-                            reinterpret_cast<void * const *>(positions.data()), counts.size());
+                            reinterpret_cast<void * const *>(positions.data()), GLsizei(counts.size()));
     }
 
     /// Draw multiple indexed primitives from the vertex array using an array of index bounds with offsets
@@ -154,7 +167,7 @@ public:
         glMultiDrawElementsBaseVertex(static_cast<GLenum>(prim), counts.data(),
                                       static_cast<GLenum>(type),
                                       reinterpret_cast<void * const *>(positions.data()),
-                                      counts.size(), bases.data());
+                                      GLsizei(counts.size()), bases.data());
     }
 
     // Drawing - instanced
@@ -203,12 +216,12 @@ public:
     }
 
 private:
-    id_type                 m_id;           ///< OpenGL vertex array identifier
+    id_type                 m_id = invalid_id;  ///< OpenGL vertex array identifier
 #ifndef NDEBUG
     std::vector<id_type>    m_attribArrays;
 #endif
 
-    static id_type          s_bound;        ///< Identifier of buffer that is currently bound
+    static id_type          s_bound;            ///< Identifier of buffer that is currently bound
 };
 
 /****************************************************************************/

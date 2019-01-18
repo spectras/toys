@@ -1,5 +1,6 @@
 #define GL_GLEXT_PROTOTYPES
 #include <csignal>
+#include <cstdlib>
 #include <iostream>
 #include <SDL.h>
 #include "Application.h"
@@ -24,6 +25,7 @@ int main(int, char *[])
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
         std::cerr <<SDL_GetError() <<std::endl;
     }
+    std::atexit(SDL_Quit);
     SDL_GL_SetSwapInterval(1);
 
     // Initialize the application
@@ -36,7 +38,7 @@ int main(int, char *[])
     std::signal(SIGHUP, SIG_IGN);
 
     // Run the main event loop
-    int retcode = app->run();
+    auto retcode = app->run();
 
     // Disable signal handlers so they don't use app after it is deleted
     std::signal(SIGINT, SIG_IGN);
@@ -46,6 +48,5 @@ int main(int, char *[])
     // Destroy the application
     app = nullptr;
 
-    SDL_Quit();
     return retcode;
 }

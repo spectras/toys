@@ -16,7 +16,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMakeModules)
 # -ffast-math   -> tell the compiler it can perform optimisations at the expense of precision.
 #                  Usually a good idea in 3D programs
 # the rest      -> enable many warnings
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -ffast-math -Wall -Wextra -pedantic -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -ffast-math")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wsign-conversion -Wconversion -Wold-style-cast -Werror")
 
 # How to call the xxd utility
 set(XXD "xxd")

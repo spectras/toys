@@ -38,9 +38,7 @@ void std::default_delete<SDL_Window>::operator()(SDL_Window *p) const
 
 Application::Application(std::string name)
  : m_quit(false),
-   m_window(createWindow(name)),
-   m_angle(0.0f),
-   m_visible(false)
+   m_window(createWindow(name))
 {}
 
 Application::~Application()
@@ -50,7 +48,7 @@ int Application::run()
 {
     init();
 
-    auto lastTicks = SDL_GetTicks();
+    auto lastTicks = milliseconds{SDL_GetTicks()};
     do {
         // Handle any waiting event
         SDL_Event event;
@@ -65,7 +63,7 @@ int Application::run()
         }
 
         // Keep track of elapsed time and feed it to update()
-        auto ticks = SDL_GetTicks();
+        auto ticks = milliseconds{SDL_GetTicks()};
         update(ticks - lastTicks);
 
         // Render to hidden buffer, then swap buffers to show the result
@@ -75,7 +73,7 @@ int Application::run()
         // Finalize pass
         processErrors("mainloop errors");
         lastTicks = ticks;
-    } while(!m_quit);
+    } while(!m_quit.load(std::memory_order_relaxed));
 
     std::cerr <<"Exiting" <<std::endl;
     return 0;
@@ -113,9 +111,9 @@ void Application::init()
     }
 }
 
-void Application::update(unsigned ms)
+void Application::update(milliseconds ms)
 {
-    m_angle += 200 * ms / 1000;
+    m_angle += 200 * ms.count() / 1000;
     if (m_angle >= 10000) { m_angle -= 10000; }
 }
 
@@ -152,7 +150,7 @@ void Application::render()
 
 bool Application::processErrors(const char * ctx)
 {
-    GLenum err = glGetError();
+    auto err = glGetError();
     if (err == GL_NO_ERROR) { return true; }
 
     // There may be several errors, loop until we got all of them
@@ -196,7 +194,7 @@ void Application::onWindowEvent(const SDL_WindowEvent & evt)
 
 void Application::quit()
 {
-    m_quit = true;
+    m_quit.store(true, std::memory_order_relaxed);
 }
 
 std::unique_ptr<SDL_Window> Application::createWindow(const std::string & name)

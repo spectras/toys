@@ -38,9 +38,10 @@ enum class target {
 template <target Target> class Buffer final
 {
     using id_type = GLuint;                     ///< Iternal type of buffer identifier
-    static constexpr id_type invalid_id = 0;    ///< Sentinel value for invalid buffer object
 
 public:
+    static constexpr id_type invalid_id = 0;    ///< Sentinel value for invalid buffer object
+
     /// Hints to driver for optimisation
     enum class usage {
         StaticDraw = GL_STATIC_DRAW,    ///< Data is intialized once and used to draw many times
@@ -55,7 +56,7 @@ public:
     };
 
 public:
-    Buffer() : m_id(invalid_id), m_size(0)
+    Buffer()
     {
         glGenBuffers(1, &m_id);
         if (m_id == invalid_id) { throw gl::error("glGenBuffers failed"); }
@@ -66,14 +67,12 @@ public:
     Buffer & operator=(const Buffer & rhs) = delete;
 
     // A buffer supports move semantics
-    Buffer(Buffer && rhs) noexcept : m_id(invalid_id), m_size(0)
+    Buffer(Buffer && rhs) noexcept
         { swap(rhs); }
     Buffer & operator=(Buffer && rhs)
     {
-        if (this != &rhs) {
-            clear();
-            swap(rhs);
-        }
+        clear();
+        swap(rhs);
         return *this;
     }
 
@@ -116,7 +115,7 @@ public:
     {
         assert(s_bound == m_id);
         m_size = size;
-        glBufferData(static_cast<GLenum>(Target), size, ptr, static_cast<GLenum>(u));
+        glBufferData(static_cast<GLenum>(Target), GLsizeiptr(size), ptr, static_cast<GLenum>(u));
     }
 
     /// Initialize a new data area from a container type
@@ -164,10 +163,10 @@ public:
         swap(m_size, rhs.m_size);
     }
 private:
-    id_type     m_id;           ///< OpenGL buffer identifier
-    std::size_t m_size;         ///< Size of buffer in bytes
+    id_type     m_id = invalid_id;  ///< OpenGL buffer identifier
+    std::size_t m_size = 0;         ///< Size of buffer in bytes
 
-    static id_type s_bound;     ///< Identifier of buffer that is currently bound
+    static id_type s_bound;         ///< Identifier of buffer that is currently bound
 };
 
 /// Swap two buffers, enabling ADL semantics
