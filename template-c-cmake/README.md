@@ -72,7 +72,7 @@ Let's build your project. From the project root, run the following commands:
     cd build        # enter the build directory
     cmake ..        # detect libraries and configure the build environment
     make            # build the project
-    make doc        # build the project documentation
+    make docs       # build the project documentation
 
 You should have your project binary in its first version. Let's try it:
 

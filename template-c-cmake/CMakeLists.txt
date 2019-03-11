@@ -11,24 +11,21 @@
 #     make doc      => build the documentation
 #     make test     => run the tests
 #
-cmake_minimum_required (VERSION 2.8)
-project (example C)
+cmake_minimum_required (VERSION 3.0)
+project (example VERSION 0.1 LANGUAGES C)
 set(PROJECT_DESCRIPTION "Example project template")
-set(PROJECT_VERSION_MAJOR 0)
-set(PROJECT_VERSION_MINOR 1)
 
 ##############################################################################
 # Settings
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMakeModules)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall -Wextra -pedantic -Werror -D_POSIX_C_SOURCE=200112L")
-set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -s")
+add_compile_options(-Wall -Wextra -Werror)
 
 ##############################################################################
 # Sources
 
-# Look for header files in build directory (for config.h) and include dir
-include_directories("${PROJECT_BINARY_DIR}" "include")
+# Project-wide include paths
+include_directories("include")
 
 # List of sources for everything except main()
 set(example_SRCS
@@ -48,21 +45,23 @@ set(tests_SRCS
 # Add the libraries you use here. Example for SDL2:
 #
 #   find_package(SDL2 REQUIRED)
-#   include_directories("${SDL2_INCLUDE_DIR}")
-#   set(example_DEPS ${example_DEPS} ${SDL2_LIBRARY})
 
-# Write the result of all our tests to config.h
+# Write the result of all our tests to config.h and ensure all targets see it
 configure_file("include/config.h.in" "config.h")
+include_directories("${PROJECT_BINARY_DIR}")
 
 ##############################################################################
 # Targets
 
 # Build all project sources
 add_library(core STATIC ${example_SRCS})
-add_executable(${CMAKE_PROJECT_NAME} src/main.c)
+target_compile_options(core PRIVATE -std=c99)
 
-# Link all modules to the main() entry point, and add external libs
-target_link_libraries(${CMAKE_PROJECT_NAME} core ${example_DEPS})
+# Generate executable
+add_executable(${CMAKE_PROJECT_NAME} src/main.c)
+target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE _POSIX_C_SOURCE=200112L)
+target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -std=c99)
+target_link_libraries(${CMAKE_PROJECT_NAME} core)
 
 # Tell cmake to install project into /usr/local/bin
 install(TARGETS ${CMAKE_PROJECT_NAME} DESTINATION bin)
@@ -76,7 +75,7 @@ if(CHECK_FOUND)
     enable_testing()
 
     add_executable(runtests ${tests_SRCS} tests/main.c)
-    target_link_libraries(runtests core ${example_DEPS} ${CHECK_LIBRARIES})
+    target_link_libraries(runtests core ${CHECK_LIBRARIES})
 
     add_test("runtests" runtests)
 endif()
@@ -85,12 +84,14 @@ endif()
 # Documentation
 
 find_package(Doxygen)
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/.doxygen"
-               "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")
-add_custom_target(doc
-    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMAND ${CMAKE_COMMAND} -E tar "czf" "docs.tgz" docs
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Generating documentation"
-)
+if (DOXYGEN_FOUND)
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/.doxygen"
+                "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")
+    add_custom_target(docs
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMAND ${CMAKE_COMMAND} -E tar "czf" "docs.tgz" docs
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating documentation"
+    )
+endif()
