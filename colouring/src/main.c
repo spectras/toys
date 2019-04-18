@@ -13,7 +13,6 @@
 #include <time.h>
 #include <unistd.h>
 #include <SDL.h>
-#include "config.h"
 #include "colouring.h"
 #include "world.h"
 

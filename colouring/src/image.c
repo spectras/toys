@@ -4,7 +4,6 @@
 #include <png.h>
 #include <SDL.h>
 #include <stdbool.h>
-#include "config.h"
 #include "image.h"
 
 /** Memory buffer descriptor

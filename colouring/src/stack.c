@@ -4,7 +4,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include "config.h"
 #include "stack.h"
 
 static const size_t initial_capacity = 16;  /**< Stack capacity for new stacks. */

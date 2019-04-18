@@ -9,23 +9,20 @@
 #
 # After cmake has completed, simply run  make  to build the project.
 #
-cmake_minimum_required (VERSION 2.8)
-project (colouring C)
-set(PROJECT_VERSION_MAJOR 1)
-set(PROJECT_VERSION_MINOR 0)
+cmake_minimum_required (VERSION 3.3)
+project (colouring VERSION 1.0 LANGUAGES C)
 
 ##############################################################################
 # Settings
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMakeModules)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall -Wextra -pedantic -Werror -D_POSIX_C_SOURCE=200112L")
-set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -s")
+add_compile_options(-std=c99 -Wall -Wextra -pedantic)
 
 ##############################################################################
 # Sources
 
 # Look for header files in build directory (for config.h) and include dir
-include_directories("${PROJECT_BINARY_DIR}" "include")
+include_directories("include")
 
 # List of sources for everything except main()
 set(colouring_SRCS
@@ -54,12 +51,6 @@ set(colouring_RESOURCES
 find_package(SDL2 REQUIRED)
 find_package(PNG REQUIRED)
 
-include_directories("${SDL2_INCLUDE_DIR}" "${PNG_INCLUDE_DIR}")
-set(colouring_DEPS ${colouring_DEPS} ${SDL2_LIBRARY} ${PNG_LIBRARY})
-
-# Write the result of all our tests to config.h
-configure_file("include/config.h.in" "config.h")
-
 ##############################################################################
 # Custom commands
 
@@ -81,10 +72,13 @@ ENDFOREACH()
 
 # Build all project sources
 add_library(core STATIC ${colouring_SRCS} ${RESOURCES})
-add_executable(colouring src/main.c)
+target_include_directories(core PRIVATE ${PNG_INCLUDE_DIR})
+target_include_directories(core PUBLIC ${SDL2_INCLUDE_DIR})
 
 # Link all modules to the main() entry point, and add external libs
-target_link_libraries(colouring core ${colouring_DEPS})
+add_executable(colouring src/main.c)
+target_compile_definitions(colouring PRIVATE _POSIX_C_SOURCE=200112L)
+target_link_libraries(colouring -s core ${SDL2_LIBRARY} ${PNG_LIBRARY})
 
 # Tell cmake to install colouring into /usr/local/bin
 install(TARGETS colouring DESTINATION bin)
@@ -112,7 +106,7 @@ if(CHECK_FOUND)
     enable_testing()
 
     add_executable(runtests ${tests_SRCS} tests/main.c)
-    target_link_libraries(runtests core ${kenti_DEPS} ${CHECK_LIBRARIES})
+    target_link_libraries(runtests core ${CHECK_LIBRARIES})
 
     add_test("runtests" runtests)
 endif()
