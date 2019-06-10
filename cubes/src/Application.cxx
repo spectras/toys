@@ -29,10 +29,7 @@ static gl::VertexBuffer loadCubeData();
 
 /****************************************************************************/
 
-void std::default_delete<SDL_Window>::operator()(SDL_Window *p) const
-{
-    SDL_DestroyWindow(p);
-}
+void SDLDeleter<SDL_Window>::operator()(SDL_Window * ptr) const { SDL_DestroyWindow(ptr); }
 
 /****************************************************************************/
 
@@ -197,7 +194,7 @@ void Application::quit()
     m_quit.store(true, std::memory_order_relaxed);
 }
 
-std::unique_ptr<SDL_Window> Application::createWindow(const std::string & name)
+sdl_ptr<SDL_Window> Application::createWindow(const std::string & name)
 {
     SDL_GL_ResetAttributes();
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);   // we want OpenGL 3
@@ -209,7 +206,7 @@ std::unique_ptr<SDL_Window> Application::createWindow(const std::string & name)
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);               // 8-bit blue channel
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);            // with double buffering
 
-    auto window = std::unique_ptr<SDL_Window>(SDL_CreateWindow(
+    auto window = sdl_ptr<SDL_Window>(SDL_CreateWindow(
         name.c_str(),
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
         800, 600,

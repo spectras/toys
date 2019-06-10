@@ -14,10 +14,10 @@ struct SDL_Window;
 struct SDL_KeyboardEvent;
 struct SDL_WindowEvent;
 
-namespace std {
-    /// Tell the STL how to properly destroy an SDL_Window
-    template <> struct default_delete<SDL_Window> { void operator()(SDL_Window *p) const; };
-}
+// unique_ptr variants that properly destroy SDL resources
+template <typename T> struct SDLDeleter {};
+template<> struct SDLDeleter<SDL_Window> { void operator()(SDL_Window *) const; };
+template <typename T> using sdl_ptr = std::unique_ptr<T, SDLDeleter<T>>;
 
 /****************************************************************************/
 
@@ -46,19 +46,19 @@ private:
 
 private:
     /// Create an OpenGL-enabled window
-    static std::unique_ptr<SDL_Window> createWindow(const std::string & name);
+    static sdl_ptr<SDL_Window> createWindow(const std::string & name);
 
 private:
-    std::atomic<bool>           m_quit;                 ///< When set, run() will exit
-    std::unique_ptr<SDL_Window> m_window;               ///< Main application window
+    std::atomic<bool>   m_quit;                 ///< When set, run() will exit
+    sdl_ptr<SDL_Window> m_window;               ///< Main application window
 
-    gl::Program                 m_program;              ///< Shader program used for rendering
-    gl::VertexArray             m_array;                ///< Fully loaded cube vertex array
-    gl::VertexBuffer            m_cube;                 ///< Geometry for a single cube
-    GLint                       m_mvpLocation = 0;      ///< Location of mvp uniform variable
+    gl::Program         m_program;              ///< Shader program used for rendering
+    gl::VertexArray     m_array;                ///< Fully loaded cube vertex array
+    gl::VertexBuffer    m_cube;                 ///< Geometry for a single cube
+    GLint               m_mvpLocation = 0;      ///< Location of mvp uniform variable
 
-    unsigned                    m_angle = 0;            ///< Current rotation angle for cubes
-    bool                        m_visible = false;      ///< Whether window is currently visible
+    unsigned            m_angle = 0;            ///< Current rotation angle for cubes
+    bool                m_visible = false;      ///< Whether window is currently visible
 };
 
 /****************************************************************************/

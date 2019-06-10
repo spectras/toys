@@ -3,6 +3,8 @@ cmake_minimum_required (VERSION 3.0)
 project(cubes VERSION 0.1 LANGUAGES CXX)
 set(PROJECT_DESCRIPTION "Cubes demonstration")
 
+cmake_policy(SET CMP0072 NEW)
+
 ##############################################################################
 # Settings
 
@@ -55,13 +57,13 @@ find_package(glm REQUIRED)
 # Targets
 
 add_library(core STATIC ${cubes_SRCS})
-target_compile_options(core PRIVATE -std=c++14 -ffast-math)
+target_compile_options(core PRIVATE -std=c++17 -ffast-math)
 target_include_directories(core PRIVATE ${SDL2_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR} ${GLM_INCLUDE_DIRS})
 add_library(shaders STATIC ${shaders_SRCS})
 
 add_executable(${CMAKE_PROJECT_NAME} src/main.cxx)
-target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -std=c++14)
+target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -std=c++17)
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIR})
-target_link_libraries(${CMAKE_PROJECT_NAME} core shaders ${SDL2_LIBRARY} ${OPENGL_gl_LIBRARY})
+target_link_libraries(${CMAKE_PROJECT_NAME} core shaders ${SDL2_LIBRARY} OpenGL::OpenGL)
 
 install(TARGETS ${CMAKE_PROJECT_NAME} DESTINATION bin)
