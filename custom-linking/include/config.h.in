@@ -1,0 +1,12 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#cmakedefine HAS_ATTRIBUTE_USED
+
+#ifdef HAS_ATTRIBUTE_USED
+#define USED    __attribute__((used))
+#else
+#define USED
+#endif
+
+#endif

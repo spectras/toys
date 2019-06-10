@@ -1,0 +1,9 @@
+SECTIONS {
+    .data.rel.ro :              /* output to read-only, relocation-aware data section */
+    {
+        . = ALIGN(4);           /* ensure 32-bit alignment */
+        moduleMap = .;          /* moduleMap starts here */
+        KEEP(*(.module_map))    /* insert all struct declared with section(".module_map") */
+        moduleMapEnd = .;       /* define moduleMapEnd to be the address right past the last item */
+    }
+}
